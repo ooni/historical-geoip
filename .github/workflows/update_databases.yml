@@ -23,6 +23,11 @@ jobs:
             ~/cache_dir
             ~/outputs
 
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.18.0'
+          cache: true
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
