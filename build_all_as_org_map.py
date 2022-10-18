@@ -75,7 +75,10 @@ def build_asn_org_map(in_file, day_str):
 
 def main():
     input_dir = Path("cache_dir") / "as-organizations"
-    output_path = Path("outputs") / "all_as_org_map.json"
+    output_dir = Path("outputs")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    output_path = output_dir / "all_as_org_map.json"
 
     print("[+] Building AS Organization map")
     all_as_org_map = {}

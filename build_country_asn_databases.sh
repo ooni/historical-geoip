@@ -38,5 +38,6 @@ function build_db() {
 }
 
 echo "[+] Building GeoIP enriched databases"
+mkdir -p outputs/
 build_db "cache_dir/maxmind-geolite2-country" day_str_maxmind "$1"
 build_db "cache_dir/dbip-country-lite" day_str_dbip "$1"
