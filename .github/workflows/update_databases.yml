@@ -1,0 +1,33 @@
+name: update_databases
+on:
+  schedule:
+    # We should monitor this to see if it's enough to wait for the 4th day
+    # according to the mtime of the gzip it's created on the first day of the
+    # month at 30 minutes past midnight
+    - cron: "0 2 1-4 * *"
+  push:
+    branches:
+      - main
+
+jobs:
+  update_databases:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: cache inputs and outputs
+        uses: actions/cache@v3
+        key: update_databases_inputs_outputs
+        with:
+          path: |
+            ~/cache_dir
+            ~/outputs
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - run: pip install -r requirements.txt
+
+      - run: ./update_databases.sh

@@ -79,7 +79,7 @@ def main():
 
     print("[+] Building AS Organization map")
     all_as_org_map = {}
-    for fn in input_dir.glob("*.txt.gz"):
+    for fn in sorted(input_dir.glob("*.txt.gz")):
         day_str = fn.name.split(".")[0]
 
         with gzip.open(fn, "rt", encoding="utf-8") as in_file:
@@ -106,7 +106,7 @@ def main():
 
     print(f"writing {output_path}")
     with output_path.open("w") as out_file:
-        json.dump(all_as_org_map, out_file)
+        json.dump(all_as_org_map, out_file, sort_keys=True)
 
 
 if __name__ == "__main__":

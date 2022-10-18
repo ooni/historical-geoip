@@ -32,6 +32,10 @@ def list_all_ia_items(identifier: str) -> List[IAItem]:
     resp = requests.get(
         f"https://archive.org/download/{identifier}/{identifier}_files.xml"
     )
+    if resp.status_code == 404:
+        return []
+
+    resp.raise_for_status()
     tree = ET.fromstring(resp.text)
     for f in tree:
         fname = f.get("name")
