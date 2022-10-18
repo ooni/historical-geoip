@@ -17,8 +17,8 @@ jobs:
 
       - name: cache inputs and outputs
         uses: actions/cache@v3
-        key: update_databases_inputs_outputs
         with:
+          key: update_databases_inputs_outputs
           path: |
             ~/cache_dir
             ~/outputs
