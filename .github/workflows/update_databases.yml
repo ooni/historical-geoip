@@ -25,14 +25,17 @@ jobs:
 
       - uses: actions/setup-go@v3
         with:
-          go-version: '>=1.18.0'
+          go-version: ">=1.18.0"
           cache: true
 
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-          cache: 'pip'
+          python-version: "3.9"
+          cache: "pip"
 
       - run: pip install -r requirements.txt
 
       - run: ./update_databases.sh
+        env:
+          IA_ACCESS_KEY: "$IA_ACCESS_KEY"
+          IA_SECRET_KEY: "$IA_SECRET_KEY"
