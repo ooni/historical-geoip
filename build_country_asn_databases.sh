@@ -16,7 +16,7 @@ function build_db() {
 
     for fn in $db_dir/*mmdb.gz;do
         dst_filename=$(basename $fn | sed s/\.gz//)
-        dst_path="cache_dir/maxmind-geolite2-country/$dst_filename"
+        dst_path="$db_dir/$dst_filename"
 
         if [[ ! -f ${dst_path} ]];then
             echo "Unzipping $fn to $dst_path"
