@@ -37,5 +37,5 @@ jobs:
 
       - run: ./update_databases.sh
         env:
-          IA_ACCESS_KEY: "$IA_ACCESS_KEY"
-          IA_SECRET_KEY: "$IA_SECRET_KEY"
+          IA_ACCESS_KEY: $IA_ACCESS_KEY
+          IA_SECRET_KEY: $IA_SECRET_KEY
