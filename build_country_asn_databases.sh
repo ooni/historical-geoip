@@ -26,7 +26,7 @@ function build_db() {
 
         day_str=$($day_str_func "$dst_filename")
         output_mmdb="outputs/${day_str}-ip2country_as.mmdb"
-        if [[ $skip_existing == "skip_existing" && -f ${output_mmdb} ]];then
+        if [[ "$skip_existing" == "skip_existing" && -f ${output_mmdb} ]];then
             echo "    skipping ${output_mmdb}"
         else
             echo "    building ${output_mmdb}"

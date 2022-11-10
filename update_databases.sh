@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -ex
 
 echo "== UPLOADING DB-IP file if necessary"
