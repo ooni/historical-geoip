@@ -20,10 +20,10 @@ def get_latest_timestamp():
 
 
 def download_latest_dbip(cache_dir: Path) -> Path:
-    print("   downloading latest db IP file")
     current_ts = datetime.utcnow().strftime("%Y-%m")
     filename = f"dbip-country-lite-{current_ts}.mmdb.gz"
     output_path = cache_dir / "dbip-country-lite" / filename
+    print(f"   downloading latest db IP file to {output_path}")
     with requests.get(
         f"https://download.db-ip.com/free/{filename}", stream=True
     ) as resp:
