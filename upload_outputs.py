@@ -1,16 +1,21 @@
 import os
+import time
 from pathlib import Path
 from itertools import chain
 from download_assets import list_all_ia_items, file_sha1_hexdigest
 
-import requests
 import internetarchive as ia
 
 
 def upload_to_ia(identifier: str, filepath: Path, access_key: str, secret_key: str):
     print(f"   uploading {filepath.name}")
     files = {filepath.name: filepath.open("rb")}
-    ia.upload(identifier, files=files, access_key=access_key, secret_key=secret_key)
+    for backoff in [0.3, 0.6, 1.2, 2.4]:
+        try:
+            ia.upload(identifier, files=files, access_key=access_key, secret_key=secret_key)
+            break
+        except:
+            time.sleep(backoff)
 
 
 def upload_missing(outputs_dir: Path, secret_key: str, access_key: str):
