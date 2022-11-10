@@ -197,6 +197,11 @@ def main():
     print("[+] downloading prefix2as assets")
     download_prefix2as(cache_dir, days)
 
+    print("[+] downloading pre-built ip2country-as dbs")
+    output_dir = Path("outputs")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    download_all_ia_files(output_dir, "ip2country-as", ".mmdb.gz")
+
 
 if __name__ == "__main__":
     main()
