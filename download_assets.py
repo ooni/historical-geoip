@@ -10,8 +10,15 @@ from glob import glob
 from functools import lru_cache
 
 import requests
+from requests.adapters import HTTPAdapter, Retry
+
 from lxml import html
 
+retry_strategy = Retry(total=4, backoff_factor=0.1)
+
+req_session = requests.Session()
+req_session.mount('http://', HTTPAdapter(max_retries=retry_strategy))
+req_session.mount('https://', HTTPAdapter(max_retries=retry_strategy))
 
 def file_sha1_hexdigest(filepath: Path):
     h = hashlib.sha1()
@@ -29,7 +36,7 @@ IAItem = namedtuple("IAItem", ["identifier", "filename", "sha1"])
 
 def list_all_ia_items(identifier: str) -> List[IAItem]:
     ia_items = []
-    resp = requests.get(
+    resp = req_session.get(
         f"https://archive.org/download/{identifier}/{identifier}_files.xml"
     )
     if resp.status_code == 404:
@@ -57,7 +64,7 @@ def maybe_download_ia_file(output_dir: Path, ia_item: IAItem):
 
     url = f"https://archive.org/download/{ia_item.identifier}/{ia_item.filename}"
     print(f"    downloading {url}")
-    with requests.get(url, stream=True) as resp:
+    with req_session.get(url, stream=True) as resp:
         resp.raise_for_status()
         with output_path.with_suffix(".tmp").open("wb") as out_file:
             for b in resp.iter_content(chunk_size=2**16):
@@ -88,7 +95,7 @@ def download_ia_assets(cache_dir: Path):
 @lru_cache(maxsize=None)
 def links_in_folder(url: str):
     assert url.endswith("/")
-    resp = requests.get(url)
+    resp = req_session.get(url)
     tree = html.fromstring(resp.text)
     return [f"{url}{href}" for href in tree.xpath("//a[@href]/text()")[5:]]
 
@@ -112,7 +119,7 @@ def download_as_organizations(cache_dir: Path):
 
         if not dst_path.exists():
             print(f"    downloading {url}")
-            with requests.get(url, stream=True) as resp:
+            with req_session.get(url, stream=True) as resp:
                 resp.raise_for_status()
                 with dst_path.with_suffix(".tmp").open("wb") as out_file:
                     for chunk in resp.iter_content(chunk_size=2**16):
@@ -137,7 +144,7 @@ def download_routeviews_prefix2as(output_dir: Path, day: date, folders: list):
         if dst_filepath.exists():
             continue
 
-        with requests.get(prfx2as_url, stream=True) as resp:
+        with req_session.get(prfx2as_url, stream=True) as resp:
             print(f"    downloading {prfx2as_url}")
             resp.raise_for_status()
             with dst_filepath.with_suffix(".tmp").open("wb") as out_file:
