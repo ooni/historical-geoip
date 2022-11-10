@@ -1,4 +1,6 @@
 import os
+import gzip
+import shutil
 import hashlib
 from collections import namedtuple
 from pathlib import Path
@@ -201,7 +203,12 @@ def main():
     output_dir = Path("outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
     download_all_ia_files(output_dir, "ip2country-as", ".mmdb.gz")
-
+    for fn in output_dir.glob("*.mmdb.gz"):
+        output_path = fn.with_suffix(".tmp")
+        with gzip.open(fn) as in_file:
+            with output_path.open("wb") as out_file:
+                shutil.copyfileobj(in_file, out_file)
+        output_path.rename(output_path.with_suffix(""))
 
 if __name__ == "__main__":
     main()
