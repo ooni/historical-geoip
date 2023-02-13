@@ -5,8 +5,8 @@ for use in the OONI data processing pipeline, but potentially for use by the
 probes as well.
 
 The data sources used for IP to country mappings are:
-* Historical copies of [Maxmind GeoIP2 Lite](https://dev.maxmind.com/geoip/geolite2-free-geolocation-) from [20180206 to 20191224](https://archive.org/download/maxmind-geolite2-country).
-* From 2020-02 onward we use monthly dump from [db-ip](https://db-ip.com/db/download/ip-to-country-lite), which are also [publicly archived](https://archive.org/download/dbip-country-lite).
+* Historical copies of [Maxmind GeoIP2 Country Lite](https://dev.maxmind.com/geoip/geolite2-free-geolocation-) from [20180206 to 20191224](https://archive.org/download/maxmind-geolite2-country).
+* From 2020-02 onward we use monthly [DB-IP IP2Country Lite](https://db-ip.com/db/download/ip-to-country-lite), which are also [publicly archived](https://archive.org/download/dbip-country-lite).
 
 For mapping IP ranges to ASNs we use the [prefix2as mappings from CAIDA](https://publicdata.caida.org/datasets/routing/routeviews-prefix2as/).
 
@@ -26,7 +26,7 @@ files) is the following:
 graph
     A[AS Organizations] --> E{{AS to ORG Map}}
     E --> D{Enrich country DB}
-    B[Maxmind IP2Country] --> D
+    B[Maxmind GeoIP2 Country] --> D
     C[DB-IP IP2Country] --> D
     F[prefix2AS] --> D
     D --> O{{IP to Country + ASN mmdb}}
@@ -45,4 +45,4 @@ The keys used in the result for returning metadata information are the following
 * `autonomous_system_country`, is the country of registration of the AS
   organization. This key is non-standard.
 * `autonomous_system_name`, is the name of the AS, which in most cases is
-  different from the organization anme. This key is non-standard.
+  different from the organization name. This key is non-standard.
