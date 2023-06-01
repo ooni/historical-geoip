@@ -2,7 +2,7 @@
 internetarchive==3.0.2
 lxml==4.9.1
 maxminddb==2.2.0
-requests==2.28.1
+requests==2.31.0
 
 # Indirect
 black==22.10.0
