@@ -27,4 +27,4 @@ six==1.16.0
 tomli==2.0.1
 tqdm==4.64.1
 typing_extensions==4.4.0
-urllib3==1.26.17
+urllib3==1.26.18
