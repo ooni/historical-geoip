@@ -35,6 +35,9 @@ graph
 Both the AS to ORG Map and the timestamped IP to Country + ASN mmdb files are
 [published as artifacts on archive.org](https://archive.org/download/ip2country-as).
 
+Note: if the repository is inactive for more than 60 days, the GitHub action
+that publishes artifacts is disabled and we don't publish artifacts.
+
 The IP to Country + ASN is compatible with the mmdb file format, but country
 and ASN lookup are supported inside of the same call.
 
