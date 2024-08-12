@@ -5,6 +5,7 @@ on:
     # according to the mtime of the gzip it's created on the first day of the
     # month at 30 minutes past midnight
     - cron: "0 2 1-4 * *"
+  pull_request:
   push:
     branches:
       - main
