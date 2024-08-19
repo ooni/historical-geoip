@@ -32,9 +32,17 @@ def file_sha1_hexdigest(filepath: Path):
             h.update(b)
     return h.hexdigest()
 
+def file_md5_hexdigest(filepath: Path):
+    h = hashlib.md5()
+    with filepath.open("rb") as in_file:
+        while True:
+            b = in_file.read(2**16)
+            if not b:
+                break
+            h.update(b)
+    return h.hexdigest()
 
 IAItem = namedtuple("IAItem", ["identifier", "filename", "sha1"])
-
 
 def list_all_ia_items(identifier: str) -> List[IAItem]:
     ia_items = []
