@@ -49,3 +49,19 @@ The keys used in the result for returning metadata information are the following
   organization. This key is non-standard.
 * `autonomous_system_name`, is the name of the AS, which in most cases is
   different from the organization name. This key is non-standard.
+
+## Skipped workflows
+
+If the workflow happens to be skipped for more than a month you may need to backfill the missing older dates.
+
+This can be done by passing the missing timestamp to the `./update_databases.sh` script, like so:
+
+```
+./update_databases.sh YYYYMM
+```
+
+You can also manually trigger the workflow for debug purposes using the [github CLI](https://cli.github.com/) command:
+
+```
+gh workflow run .github/workflows/update_databases.yml
+```
