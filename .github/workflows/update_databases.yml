@@ -3,7 +3,8 @@ on:
   schedule:
     # We should monitor this to see if it's enough to wait for the 4th day
     # according to the mtime of the gzip it's created on the first day of the
-    # month at 30 minutes past midnight
+    # month at 30 minutes past midnight.
+    # Note: it get's disabled after 60 days of no pushes to this repo.
     - cron: "0 2 1-4 * *"
   pull_request:
   push:
