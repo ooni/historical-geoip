@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 from datetime import datetime
 from download_assets import list_all_ia_items
@@ -19,8 +20,9 @@ def get_latest_timestamp():
     return max(dbfiles_ts)
 
 
-def download_latest_dbip(cache_dir: Path) -> Path:
-    current_ts = datetime.utcnow().strftime("%Y-%m")
+def download_dbip(cache_dir: Path, ts: str) -> Path:
+    assert len(ts) == 6 and ts.isdigit(), f"wrong ts format {ts}"
+    current_ts = f"{ts[:4]}-{ts[4:]}"
     filename = f"dbip-country-lite-{current_ts}.mmdb.gz"
     output_dir = cache_dir / "dbip-country-lite"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -38,7 +40,7 @@ def download_latest_dbip(cache_dir: Path) -> Path:
 
 
 def upload_to_ia(identifier: str, filepath: Path, access_key: str, secret_key: str):
-    print("   uploading latest db IP file")
+    print(f"   uploading db IP file {filepath} to {identifier}")
     files = {filepath.name: filepath.open("rb")}
     ia.upload(identifier, files=files, access_key=access_key, secret_key=secret_key)
 
@@ -49,19 +51,30 @@ def maybe_sync(cache_dir: Path, secret_key: str, access_key: str):
     print(f"   latest available timestamp is {latest_ts}")
     if latest_ts != current_ts:
         print(f"[+] running sync to download {latest_ts}")
-        filepath = download_latest_dbip(cache_dir)
+        filepath = download_dbip(cache_dir, current_ts)
         upload_to_ia(
             "dbip-country-lite", filepath, secret_key=secret_key, access_key=access_key
         )
 
 
 def main():
+    try:
+        ts = sys.argv[1]
+    except IndexError:
+        ts = None
     cache_dir = Path("cache_dir")
     access_key = os.environ.get("IA_ACCESS_KEY", "")
     secret_key = os.environ.get("IA_SECRET_KEY", "")
     if access_key == "" or secret_key == "":
         print("WARNING IA_ACCESS_KEY or IA_SECRET_KEY are not set. Upload will fail")
-    maybe_sync(cache_dir=cache_dir, access_key=access_key, secret_key=secret_key)
+    if ts is not None:
+        print(f"[+] downloading the following ts: {ts}")
+        filepath = download_dbip(cache_dir, ts)
+        upload_to_ia(
+            "dbip-country-lite", filepath, secret_key=secret_key, access_key=access_key
+        )
+    else:
+        maybe_sync(cache_dir=cache_dir, access_key=access_key, secret_key=secret_key)
 
 
 if __name__ == "__main__":

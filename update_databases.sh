@@ -2,7 +2,7 @@
 set -ex
 
 echo "== UPLOADING DB-IP file if necessary"
-python3 sync_db_ip.py
+python3 sync_db_ip.py $@
 
 # fetches all the requirements for the build
 echo "== DOWNLOADING required assets databases"
