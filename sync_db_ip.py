@@ -40,7 +40,7 @@ def download_dbip(cache_dir: Path, ts: str) -> Path:
 
 
 def upload_to_ia(identifier: str, filepath: Path, access_key: str, secret_key: str):
-    print("   uploading db IP file {filepath} to {identifier}")
+    print(f"   uploading db IP file {filepath} to {identifier}")
     files = {filepath.name: filepath.open("rb")}
     ia.upload(identifier, files=files, access_key=access_key, secret_key=secret_key)
 
