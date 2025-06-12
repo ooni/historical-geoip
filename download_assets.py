@@ -22,6 +22,7 @@ req_session = requests.Session()
 req_session.mount('http://', HTTPAdapter(max_retries=retry_strategy))
 req_session.mount('https://', HTTPAdapter(max_retries=retry_strategy))
 
+
 def file_sha1_hexdigest(filepath: Path):
     h = hashlib.sha1()
     with filepath.open("rb") as in_file:
@@ -31,6 +32,7 @@ def file_sha1_hexdigest(filepath: Path):
                 break
             h.update(b)
     return h.hexdigest()
+
 
 def file_md5_hexdigest(filepath: Path):
     h = hashlib.md5()
@@ -43,6 +45,7 @@ def file_md5_hexdigest(filepath: Path):
     return h.hexdigest()
 
 IAItem = namedtuple("IAItem", ["identifier", "filename", "sha1"])
+
 
 def list_all_ia_items(identifier: str) -> List[IAItem]:
     ia_items = []
