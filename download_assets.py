@@ -117,7 +117,12 @@ def iter_as_org_urls(since, until) -> Generator[str, None, None]:
     base_url = f"https://publicdata.caida.org/datasets/as-organizations/"
 
     for url in filter(lambda x: x.endswith("txt.gz"), links_in_folder(base_url)):
-        ts = datetime.strptime(url.split("/")[-1].split(".")[0], "%Y%m%d").date()
+        try:
+            ts = datetime.strptime(url.split("/")[-1].split(".")[0], "%Y%m%d").date()
+        except ValueError:
+            # handle inconsistent timestamps, like "latest"
+            print(s"skipping {url}")
+            pass
         if ts <= until and ts >= since:
             yield url
 
