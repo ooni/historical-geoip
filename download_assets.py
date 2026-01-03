@@ -121,7 +121,7 @@ def iter_as_org_urls(since, until) -> Generator[str, None, None]:
             ts = datetime.strptime(url.split("/")[-1].split(".")[0], "%Y%m%d").date()
         except ValueError:
             # handle inconsistent timestamps, like "latest"
-            print(s"skipping {url}")
+            print(f"skipping {url}")
             pass
         if ts <= until and ts >= since:
             yield url
