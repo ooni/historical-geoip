@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net"
 	"os"
@@ -73,7 +73,7 @@ func main() {
 	}
 	defer asOrgMapFile.Close()
 
-	asOrgMapBytes, err := ioutil.ReadAll(asOrgMapFile)
+	asOrgMapBytes, err := io.ReadAll(asOrgMapFile)
 	if err != nil {
 		log.Fatal(err)
 	}
