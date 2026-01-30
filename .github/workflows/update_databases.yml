@@ -50,7 +50,7 @@ jobs:
 
       - name: Create GitHub release
         run: |
-          tag="IP2Country-AS-$LATEST_DATE"
+          tag="ip2country-as-$LATEST_DATE"
 
           if gh release view "$tag" >/dev/null 2>&1; then
             echo "Release $tag already exists, skipping"
@@ -59,7 +59,7 @@ jobs:
 
           echo "Creating release $tag"
           gh release create "$tag" \
-            --title "ip2country-as – $LATEST_DATE" \
+            --title "IP2Country-AS–$LATEST_DATE" \
             --notes "Latest ip2country-as database build ($LATEST_DATE)" \
             outputs/${LATEST_DATE}-ip2country_as.mmdb.gz
         env:
