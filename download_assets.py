@@ -44,6 +44,18 @@ def file_md5_hexdigest(filepath: Path):
             h.update(b)
     return h.hexdigest()
 
+
+def file_sha256_hexdigest(filepath: Path):
+    h = hashlib.sha256()
+    with filepath.open("rb") as in_file:
+        while True:
+            b = in_file.read(2**16)
+            if not b:
+                break
+            h.update(b)
+    return h.hexdigest()
+
+
 IAItem = namedtuple("IAItem", ["identifier", "filename", "sha1"])
 
 

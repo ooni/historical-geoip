@@ -2,10 +2,33 @@ import os
 import time
 from pathlib import Path
 from itertools import chain
-from download_assets import list_all_ia_items, file_sha1_hexdigest, file_md5_hexdigest
+from download_assets import list_all_ia_items, file_sha1_hexdigest, file_md5_hexdigest, file_sha256_hexdigest
 
 import boto3
 import internetarchive as ia
+
+
+
+def generate_latest_yaml(outputs_dir: Path):
+    files = list(outputs_dir.glob("*-ip2country_as.mmdb.gz"))
+    
+    if not files:
+        print("[-] No .mmdb.gz files found to generate metadata.")
+        return
+
+    # Sort descending to get the newest date first
+    latest_file = sorted(files, key=lambda x: x.name, reverse=True)[0]
+    
+    print(f"[+] Generating latest.yml for {latest_file.name}")
+    
+    timestamp = latest_file.name.split("-")[0]
+    sha256_hash = file_sha256_hexdigest(latest_file)
+    
+    yaml_path = outputs_dir / "latest.yml"
+    with open(yaml_path, "w") as f:
+        f.write(f"filename: {latest_file.name}\n")
+        f.write(f"timestamp: {timestamp}\n")
+        f.write(f"sha256: {sha256_hash}\n")
 
 
 def iter_outputs(outputs_dir: Path):
@@ -76,6 +99,8 @@ def upload_missing_s3(outputs_dir: Path, access_key: str, secret_key: str):
 
 def main():
     outputs_dir = Path("outputs")
+    generate_latest_yaml(outputs_dir)
+
     ia_access_key = os.environ.get("IA_ACCESS_KEY", "")
     ia_secret_key = os.environ.get("IA_SECRET_KEY", "")
 
