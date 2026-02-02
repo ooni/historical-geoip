@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from download_assets import list_all_ia_items
 
 import boto3
@@ -97,7 +97,7 @@ def main():
             "dbip-country-lite", filepath, secret_key=secret_key, access_key=access_key
         )
     else:
-        current_ts = datetime.now(datetime.timezone.utc).strftime("%Y%m")
+        current_ts = datetime.now(timezone.utc).strftime("%Y%m")
         filepath = maybe_sync(cache_dir=cache_dir, current_ts=current_ts, access_key=access_key, secret_key=secret_key)
         upload_to_s3(prefix="dbip-country-lite", filepath=filepath, bucket_name=s3_bucket_name, access_key=s3_access_key, secret_key=s3_secret_key)
 

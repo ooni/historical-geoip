@@ -4,7 +4,7 @@ import shutil
 import hashlib
 from collections import namedtuple
 from pathlib import Path
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 from typing import Generator, List
 import xml.etree.ElementTree as ET
 from glob import glob
@@ -137,7 +137,7 @@ def download_as_organizations(cache_dir: Path, download_latest: bool):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     since_date = date(2012, 1, 1)
-    until_date = datetime.now(datetime.timezone.utc).date() 
+    until_date = datetime.now(timezone.utc).date() 
     if download_latest:
         # Start from the 1st of the current month
         since_date = until_date.replace(day=1)
