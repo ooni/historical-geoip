@@ -103,7 +103,9 @@ def download_all_ia_files(output_dir: Path, identifier: str, extension: str, dow
 
 
 def download_ia_assets(cache_dir: Path, download_latest: bool):
-    ia_assets = ["dbip-country-lite", "maxmind-geolite2-country"]
+    ia_assets = ["dbip-country-lite"]
+    if not download_latest:
+        ia_assets.append("maxmind-geolite2-country")
     for identifier in ia_assets:
         output_dir = cache_dir / identifier
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -224,7 +226,6 @@ def main():
             )
         )
     print("[+] downloading prefix2as assets")
-    print(days)
     download_prefix2as(cache_dir, days)
 
     print("[+] downloading pre-built ip2country-as dbs")
