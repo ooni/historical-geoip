@@ -88,21 +88,26 @@ def maybe_download_ia_file(output_dir: Path, ia_item: IAItem):
     assert file_sha1 == ia_item.sha1, f"{file_sha1} != {ia_item.sha1}"
 
 
-def download_all_ia_files(output_dir: Path, identifier: str, extension: str):
+def download_all_ia_files(output_dir: Path, identifier: str, extension: str, download_latest: bool):
     ia_items = list_all_ia_items(identifier=identifier)
-    for item in ia_items:
-        if not item.filename.endswith(extension):
-            continue
-
+    matching_items = sorted(
+        [item for item in ia_items if item.filename.endswith(extension)], 
+        key=lambda x: x.filename, 
+        reverse=True
+    )
+    for item in matching_items:
         maybe_download_ia_file(output_dir, item)
+        # If we only want the latest, return immediately after the first successful download
+        if download_latest:
+            return
 
 
-def download_ia_assets(cache_dir: Path):
+def download_ia_assets(cache_dir: Path, download_latest: bool):
     ia_assets = ["dbip-country-lite", "maxmind-geolite2-country"]
     for identifier in ia_assets:
         output_dir = cache_dir / identifier
         output_dir.mkdir(parents=True, exist_ok=True)
-        download_all_ia_files(output_dir, identifier, ".mmdb.gz")
+        download_all_ia_files(output_dir, identifier, ".mmdb.gz", download_latest=download_latest)
 
 
 @lru_cache(maxsize=None)
@@ -127,11 +132,17 @@ def iter_as_org_urls(since, until) -> Generator[str, None, None]:
             yield url
 
 
-def download_as_organizations(cache_dir: Path):
+def download_as_organizations(cache_dir: Path, download_latest: bool):
     output_dir = cache_dir / "as-organizations"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    for url in iter_as_org_urls(date(2012, 1, 1), datetime.utcnow().date()):
+    since_date = date(2012, 1, 1)
+    until_date = datetime.now(datetime.timezone.utc).date() 
+    if download_latest:
+        # Start from the 1st of the current month
+        since_date = until_date.replace(day=1)
+
+    for url in iter_as_org_urls(since_date, until_date):
         dst_filename = os.path.basename(url)
         dst_path = output_dir / dst_filename
 
@@ -195,9 +206,9 @@ def download_prefix2as(cache_dir: Path, days: List[date]):
 def main():
     cache_dir = Path("cache_dir")
     print("[+] downloading GeoIP assets")
-    download_ia_assets(cache_dir=cache_dir)
+    download_ia_assets(cache_dir=cache_dir, download_latest=True)
     print("[+] downloading AS Organizations assets")
-    download_as_organizations(cache_dir=cache_dir)
+    download_as_organizations(cache_dir=cache_dir, download_latest=True)
 
     days = []
     for path in (cache_dir / "dbip-country-lite").glob("*.mmdb.gz"):
@@ -218,7 +229,7 @@ def main():
     print("[+] downloading pre-built ip2country-as dbs")
     output_dir = Path("outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
-    download_all_ia_files(output_dir, "ip2country-as", ".mmdb.gz")
+    download_all_ia_files(output_dir, "ip2country-as", ".mmdb.gz", download_latest=True)
     for fn in output_dir.glob("*.mmdb.gz"):
         output_path = fn.with_suffix(".tmp")
         with gzip.open(fn) as in_file:
