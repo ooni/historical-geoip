@@ -61,6 +61,7 @@ jobs:
           gh release create "$tag" \
             --title "IP2Country-AS-$LATEST_DATE" \
             --notes "Latest ip2country-as database build ($LATEST_DATE)" \
-            outputs/${LATEST_DATE}-ip2country_as.mmdb.gz
+            outputs/${LATEST_DATE}-ip2country_as.mmdb.gz \
+            outputs/latest.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
