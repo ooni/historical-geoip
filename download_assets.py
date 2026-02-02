@@ -19,8 +19,8 @@ from lxml import html
 retry_strategy = Retry(total=4, backoff_factor=0.1)
 
 req_session = requests.Session()
-req_session.mount('http://', HTTPAdapter(max_retries=retry_strategy))
-req_session.mount('https://', HTTPAdapter(max_retries=retry_strategy))
+req_session.mount("http://", HTTPAdapter(max_retries=retry_strategy))
+req_session.mount("https://", HTTPAdapter(max_retries=retry_strategy))
 
 
 def file_sha1_hexdigest(filepath: Path):
@@ -100,12 +100,14 @@ def maybe_download_ia_file(output_dir: Path, ia_item: IAItem):
     assert file_sha1 == ia_item.sha1, f"{file_sha1} != {ia_item.sha1}"
 
 
-def download_all_ia_files(output_dir: Path, identifier: str, extension: str, download_latest: bool):
+def download_all_ia_files(
+    output_dir: Path, identifier: str, extension: str, download_latest: bool
+):
     ia_items = list_all_ia_items(identifier=identifier)
     matching_items = sorted(
-        [item for item in ia_items if item.filename.endswith(extension)], 
-        key=lambda x: x.filename, 
-        reverse=True
+        [item for item in ia_items if item.filename.endswith(extension)],
+        key=lambda x: x.filename,
+        reverse=True,
     )
     for item in matching_items:
         maybe_download_ia_file(output_dir, item)
@@ -121,7 +123,9 @@ def download_ia_assets(cache_dir: Path, download_latest: bool):
     for identifier in ia_assets:
         output_dir = cache_dir / identifier
         output_dir.mkdir(parents=True, exist_ok=True)
-        download_all_ia_files(output_dir, identifier, ".mmdb.gz", download_latest=download_latest)
+        download_all_ia_files(
+            output_dir, identifier, ".mmdb.gz", download_latest=download_latest
+        )
 
 
 @lru_cache(maxsize=None)
@@ -151,7 +155,7 @@ def download_as_organizations(cache_dir: Path, download_latest: bool):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     since_date = date(2012, 1, 1)
-    until_date = datetime.now(timezone.utc).date() 
+    until_date = datetime.now(timezone.utc).date()
     if download_latest:
         # Start from the 1st of the current month
         since_date = until_date.replace(day=1)
@@ -250,6 +254,7 @@ def main():
             with output_path.open("wb") as out_file:
                 shutil.copyfileobj(in_file, out_file)
         output_path.rename(output_path.with_suffix(""))
+
 
 if __name__ == "__main__":
     main()

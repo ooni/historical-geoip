@@ -40,15 +40,17 @@ def download_dbip(cache_dir: Path, ts: str) -> Path:
     return output_path
 
 
-def upload_to_s3(prefix: str, filepath: Path, bucket_name: str, access_key: str, secret_key: str):
+def upload_to_s3(
+    prefix: str, filepath: Path, bucket_name: str, access_key: str, secret_key: str
+):
     session = boto3.Session(
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
     )
-    s3_client = session.client('s3')
+    s3_client = session.client("s3")
 
     with filepath.open("rb") as in_file:
-        s3_client.upload_fileobj(in_file, bucket_name, f'{prefix}/{filepath.name}')
+        s3_client.upload_fileobj(in_file, bucket_name, f"{prefix}/{filepath.name}")
 
 
 def upload_to_ia(identifier: str, filepath: Path, access_key: str, secret_key: str):
@@ -57,7 +59,9 @@ def upload_to_ia(identifier: str, filepath: Path, access_key: str, secret_key: s
     ia.upload(identifier, files=files, access_key=access_key, secret_key=secret_key)
 
 
-def maybe_sync(cache_dir: Path, current_ts: str, secret_key: str, access_key: str) -> str:
+def maybe_sync(
+    cache_dir: Path, current_ts: str, secret_key: str, access_key: str
+) -> str:
     filepath = download_dbip(cache_dir, current_ts)
     latest_ts = get_latest_timestamp()
     print(f"   latest available timestamp is {latest_ts}")
@@ -88,7 +92,7 @@ def main():
     if s3_access_key == "" or s3_secret_key == "":
         print("WARNING S3_ACCESS_KEY or S3_BUCKET_NAME are not set. Upload will fail")
     if s3_bucket_name == "":
-        s3_bucket_name = "ooni-data-eu-fra" # use ooni-data bucket as fallback
+        s3_bucket_name = "ooni-data-eu-fra"  # use ooni-data bucket as fallback
 
     if ts is not None:
         print(f"[+] downloading the following ts: {ts}")
@@ -98,8 +102,19 @@ def main():
         )
     else:
         current_ts = datetime.now(timezone.utc).strftime("%Y%m")
-        filepath = maybe_sync(cache_dir=cache_dir, current_ts=current_ts, access_key=access_key, secret_key=secret_key)
-        upload_to_s3(prefix="dbip-country-lite", filepath=filepath, bucket_name=s3_bucket_name, access_key=s3_access_key, secret_key=s3_secret_key)
+        filepath = maybe_sync(
+            cache_dir=cache_dir,
+            current_ts=current_ts,
+            access_key=access_key,
+            secret_key=secret_key,
+        )
+        upload_to_s3(
+            prefix="dbip-country-lite",
+            filepath=filepath,
+            bucket_name=s3_bucket_name,
+            access_key=s3_access_key,
+            secret_key=s3_secret_key,
+        )
 
 
 if __name__ == "__main__":
