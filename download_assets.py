@@ -224,6 +224,7 @@ def main():
             )
         )
     print("[+] downloading prefix2as assets")
+    print(days)
     download_prefix2as(cache_dir, days)
 
     print("[+] downloading pre-built ip2country-as dbs")
