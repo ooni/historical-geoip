@@ -46,7 +46,6 @@ def upload_to_s3(prefix: str, filepath: Path, bucket_name: str, access_key: str,
         aws_secret_access_key=secret_key,
     )
     s3_client = session.client('s3')
-    s3 = session.resource('s3')
 
     with filepath.open("rb") as in_file:
         s3_client.upload_fileobj(in_file, bucket_name, f'{prefix}/{filepath.name}')
