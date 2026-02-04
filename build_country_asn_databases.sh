@@ -1,5 +1,6 @@
 #!/bin/bash
 set -ex
+shopt -s nullglob
 
 LATEST_DATE=""
 
