@@ -75,7 +75,7 @@ def upload_missing_ia(outputs_dir: Path, secret_key: str, access_key: str):
         )
 
 
-def upload_missing_s3(outputs_dir: Path, access_key: str, secret_key: str):
+def upload_missing_s3(outputs_dir: Path, access_key: str, secret_key: str, bucket: str):
     session = boto3.Session(
         aws_access_key_id=access_key,
         aws_secret_access_key=secret_key,
@@ -84,7 +84,7 @@ def upload_missing_s3(outputs_dir: Path, access_key: str, secret_key: str):
     s3 = session.resource("s3")
 
     existing_items = {}
-    for obj in s3.Bucket("ooni-data-eu-fra").objects.filter(Prefix="ip2country-as/"):
+    for obj in s3.Bucket(bucket).objects.filter(Prefix="ip2country-as/"):
         if obj.size == 0:
             # Skip directories
             continue
@@ -117,6 +117,7 @@ def main():
 
     s3_access_key = os.environ.get("S3_ACCESS_KEY", "")
     s3_secret_key = os.environ.get("S3_SECRET_KEY", "")
+    s3_bucket = os.environ.get("S3_BUCKET", "")
 
     did_upload = False
     if ia_access_key == "" or ia_secret_key == "":
@@ -131,9 +132,11 @@ def main():
 
     if s3_access_key == "" or s3_secret_key == "":
         print("WARNING S3_ACCESS_KEY or S3_SECRET_KEY are not set. Skipping s3 upload")
+    if s3_bucket == "":
+        s3_bucket = "ooni-geoip-eu-central-1-private-prod"
     else:
         upload_missing_s3(
-            outputs_dir=outputs_dir, access_key=s3_access_key, secret_key=s3_secret_key
+            outputs_dir=outputs_dir, access_key=s3_access_key, secret_key=s3_secret_key, bucket=s3_bucket
         )
         did_upload = True
 

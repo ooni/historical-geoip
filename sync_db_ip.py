@@ -92,7 +92,7 @@ def main():
     if s3_access_key == "" or s3_secret_key == "":
         print("WARNING S3_ACCESS_KEY or S3_BUCKET_NAME are not set. Upload will fail")
     if s3_bucket_name == "":
-        s3_bucket_name = "ooni-data-eu-fra"  # use ooni-data bucket as fallback
+        s3_bucket_name = "ooni-geoip-eu-central-1-private-prod"  # use ooni-data bucket as fallback
 
     if ts is not None:
         print(f"[+] downloading the following ts: {ts}")
