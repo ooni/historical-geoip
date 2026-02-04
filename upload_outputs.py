@@ -117,7 +117,7 @@ def main():
 
     s3_access_key = os.environ.get("S3_ACCESS_KEY", "")
     s3_secret_key = os.environ.get("S3_SECRET_KEY", "")
-    s3_bucket = os.environ.get("S3_BUCKET", "")
+    s3_bucket = os.environ.get("S3_BUCKET_NAME", "")
 
     did_upload = False
     if ia_access_key == "" or ia_secret_key == "":
