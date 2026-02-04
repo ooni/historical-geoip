@@ -132,9 +132,9 @@ def main():
 
     if s3_access_key == "" or s3_secret_key == "":
         print("WARNING S3_ACCESS_KEY or S3_SECRET_KEY are not set. Skipping s3 upload")
-    if s3_bucket == "":
-        s3_bucket = "ooni-geoip-eu-central-1-private-prod"
     else:
+        if s3_bucket == "":
+            s3_bucket = "ooni-geoip-eu-central-1-private-prod"
         upload_missing_s3(
             outputs_dir=outputs_dir, access_key=s3_access_key, secret_key=s3_secret_key, bucket=s3_bucket
         )
