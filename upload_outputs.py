@@ -104,7 +104,7 @@ def upload_missing_s3(outputs_dir: Path, access_key: str, secret_key: str, bucke
 
         with fp.open("rb") as in_file:
             s3_client.upload_fileobj(
-                in_file, "ooni-data-eu-fra", f"ip2country-as/{fp.name}"
+                in_file, bucket, f"ip2country-as/{fp.name}"
             )
 
 
