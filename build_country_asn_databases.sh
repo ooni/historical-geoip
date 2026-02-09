@@ -1,5 +1,8 @@
 #!/bin/bash
 set -ex
+shopt -s nullglob
+
+LATEST_DATE=""
 
 function day_str_maxmind() {
     echo $1 | cut -d '.' -f 1 | cut -d '_' -f2
@@ -25,6 +28,7 @@ function build_db() {
         fi
 
         day_str=$($day_str_func "$dst_filename")
+        LATEST_DATE=$day_str
         output_mmdb="outputs/${day_str}-ip2country_as.mmdb"
         if [[ "$skip_existing" == "skip_existing" && -f ${output_mmdb} ]];then
             echo "    skipping ${output_mmdb}"
@@ -41,3 +45,5 @@ echo "[+] Building GeoIP enriched databases"
 mkdir -p outputs/
 build_db "cache_dir/maxmind-geolite2-country" day_str_maxmind "$1"
 build_db "cache_dir/dbip-country-lite" day_str_dbip "$1"
+echo "LATEST_DATE=$LATEST_DATE" >> "$GITHUB_ENV"
+echo "[+] Latest dataset date: $LATEST_DATE"
