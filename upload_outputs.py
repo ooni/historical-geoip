@@ -3,15 +3,16 @@ import sys
 import time
 from pathlib import Path
 from itertools import chain
+
+import boto3
+import internetarchive as ia
+
 from download_assets import (
     list_all_ia_items,
     file_sha1_hexdigest,
     file_md5_hexdigest,
     file_sha256_hexdigest,
 )
-
-import boto3
-import internetarchive as ia
 
 
 def generate_latest_yaml(outputs_dir: Path):

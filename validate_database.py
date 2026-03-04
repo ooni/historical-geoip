@@ -1,8 +1,8 @@
 import sys
 import random
 import ipaddress
-import maxminddb
 import logging
+import maxminddb
 
 log = logging.getLogger("validate_db")
 
