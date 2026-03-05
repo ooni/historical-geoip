@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       download_latest:
-        description: 'Download only the latest files if True'
+        description: 'Download only the latest files'
         required: true
         default: true
         type: boolean
@@ -25,7 +25,7 @@ jobs:
   update_databases:
     runs-on: ubuntu-22.04
     env:
-      DOWNLOAD_LATEST: ${{ github.event.inputs.download_latest || 'True' }} # Default to True if not set
+      DOWNLOAD_LATEST: ${{ github.event.inputs.download_latest || true }}
 
     steps:
       - uses: actions/checkout@v4
