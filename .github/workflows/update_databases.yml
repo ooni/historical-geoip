@@ -13,9 +13,9 @@ on:
         description: 'Download only the latest files if True'
         required: false
         default: 'False'
-     options:
-       - 'True'
-       - 'False'
+        options:
+          - 'True'
+          - 'False'
   push:
     branches:
       - main
