@@ -5,7 +5,8 @@ on:
     # according to the mtime of the gzip it's created on the first day of the
     # month at 30 minutes past midnight.
     # Note: it get's disabled after 60 days of no pushes to this repo.
-    - cron: "0 2 1-4 * *"
+    # Note: github cache is cleared after 10 days, so run this every 9 days
+    - cron: "0 2 1-4,13,22 * *"
   pull_request:
   workflow_dispatch:
     inputs:
