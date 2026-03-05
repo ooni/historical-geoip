@@ -32,8 +32,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: cache inputs and outputs
-        id: restore-cache
-        uses: actions/cache/restore@v5
+        uses: actions/cache@v5
         with:
           key: update_databases_inputs_outputs-${{ github.run_id }}
           restore-keys: |
@@ -78,12 +77,3 @@ jobs:
             outputs/latest.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: save cache inputs and outputs
-        id: save-cache
-        uses: actions/cache/save@v5
-        with:
-          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
-          path: |
-            cache_dir
-            outputs
