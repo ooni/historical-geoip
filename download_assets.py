@@ -7,7 +7,6 @@ from pathlib import Path
 from datetime import datetime, date, timezone
 from typing import Generator, List
 import xml.etree.ElementTree as ET
-from glob import glob
 
 from functools import lru_cache
 

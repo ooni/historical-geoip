@@ -1,8 +1,8 @@
 import sys
 import random
 import ipaddress
-import maxminddb
 import logging
+import maxminddb
 
 log = logging.getLogger("validate_db")
 
@@ -25,7 +25,7 @@ def lookup_random_ips(
     ip_type: str,
 ):
     lookedup_ips = 0
-    for i in range(lookup_count):
+    for _ in range(lookup_count):
         ip = ipaddress.ip_address(random.randint(min_ip, max_ip))
         resp = reader.get(ip)
         if not resp or "country" not in resp:
