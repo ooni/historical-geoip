@@ -142,7 +142,7 @@ def main():
         )
         did_upload = True
 
-    if did_upload == False:
+    if did_upload is False:
         print("No upload performed!")
         sys.exit(1)
 

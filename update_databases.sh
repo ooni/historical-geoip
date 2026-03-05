@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex
 
+echo "current workdir: $PWD"
+
 echo "== UPLOADING DB-IP file if necessary"
 python3 sync_db_ip.py $@
 

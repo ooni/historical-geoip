@@ -2,11 +2,12 @@ import os
 import sys
 from pathlib import Path
 from datetime import datetime, timezone
-from download_assets import list_all_ia_items
 
 import boto3
 import requests
 import internetarchive as ia
+
+from download_assets import list_all_ia_items
 
 
 def get_latest_timestamp():
@@ -30,7 +31,7 @@ def download_dbip(cache_dir: Path, ts: str) -> Path:
     output_path = output_dir / filename
     print(f"   downloading latest db IP file to {output_path}")
     with requests.get(
-        f"https://download.db-ip.com/free/{filename}", stream=True
+        f"https://download.db-ip.com/free/{filename}", stream=True, timeout=120
     ) as resp:
         resp.raise_for_status()
         with output_path.with_suffix(".tmp").open("wb") as out_file:
