@@ -2,6 +2,7 @@
 set -ex
 
 echo "current workdir: $PWD"
+echo "current home: $HOME"
 
 echo "== UPLOADING DB-IP file if necessary"
 python3 sync_db_ip.py $@
