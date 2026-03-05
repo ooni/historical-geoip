@@ -35,7 +35,9 @@ jobs:
         id: restore-cache
         uses: actions/cache/restore@v5
         with:
-          key: update_databases_inputs_outputs
+          key: update_databases_inputs_outputs-${{ github.run_id }}
+          restore-keys: |
+            update_databases_inputs_outputs-
           path: |
             cache_dir
             outputs
