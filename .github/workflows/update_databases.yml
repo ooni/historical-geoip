@@ -11,11 +11,9 @@ on:
     inputs:
       download_latest:
         description: 'Download only the latest files if True'
-        required: false
-        default: 'False'
-        options:
-          - 'True'
-          - 'False'
+        required: true
+        default: true
+        type: boolean
   push:
     branches:
       - main
