@@ -222,11 +222,13 @@ def download_prefix2as(cache_dir: Path, days: List[date]):
 
 
 def main():
+    env_value = os.getenv('DOWNLOAD_LATEST', 'True').lower()
+    download_latest = env_value in ['true', '1', 't']
     cache_dir = Path("cache_dir")
     print("[+] downloading GeoIP assets")
-    download_ia_assets(cache_dir=cache_dir, download_latest=True)
+    download_ia_assets(cache_dir=cache_dir, download_latest=download_latest)
     print("[+] downloading AS Organizations assets")
-    download_as_organizations(cache_dir=cache_dir, download_latest=True)
+    download_as_organizations(cache_dir=cache_dir, download_latest=download_latest)
 
     days = []
     for path in (cache_dir / "dbip-country-lite").glob("*.mmdb.gz"):
@@ -247,7 +249,7 @@ def main():
     print("[+] downloading pre-built ip2country-as dbs")
     output_dir = Path("outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
-    download_all_ia_files(output_dir, "ip2country-as", ".mmdb.gz", download_latest=True)
+    download_all_ia_files(output_dir, "ip2country-as", ".mmdb.gz", download_latest=download_latest)
     for fn in output_dir.glob("*.mmdb.gz"):
         output_path = fn.with_suffix(".tmp")
         with gzip.open(fn) as in_file:
