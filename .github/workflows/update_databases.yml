@@ -26,8 +26,8 @@ jobs:
         with:
           key: update_databases_inputs_outputs
           path: |
-            ~/cache_dir
-            ~/outputs
+            cache_dir
+            outputs
 
       - uses: actions/setup-go@v5
         with:
