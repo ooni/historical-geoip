@@ -5,7 +5,8 @@ on:
     # according to the mtime of the gzip it's created on the first day of the
     # month at 30 minutes past midnight.
     # Note: it get's disabled after 60 days of no pushes to this repo.
-    - cron: "0 2 1-4 * *"
+    # Note: github cache is cleared after 10 days, so run this every 9 days
+    - cron: "0 2 1-4,13,22 * *"
   pull_request:
   workflow_dispatch:
     inputs:
@@ -31,7 +32,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: cache inputs and outputs
-        uses: actions/cache@v4
+        id: restore-cache
+        uses: actions/cache/restore@v5
         with:
           key: update_databases_inputs_outputs
           path: |
@@ -74,3 +76,12 @@ jobs:
             outputs/latest.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: save cache inputs and outputs
+        id: save-cache
+        uses: actions/cache/save@v5
+        with:
+          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
+          path: |
+            cache_dir
+            outputs
