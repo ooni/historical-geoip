@@ -64,11 +64,11 @@ def upload_missing_ia(outputs_dir: Path, secret_key: str, access_key: str):
         existing_items[itm.filename] = itm
 
     for fp in iter_outputs(outputs_dir):
-        if (
-            fp.name in existing_items
-            and file_sha1_hexdigest(fp) == existing_items[fp.name].sha1
-        ):
-            continue
+        # if (
+            # fp.name in existing_items
+            # and file_sha1_hexdigest(fp) == existing_items[fp.name].sha1
+        # ):
+            # continue
         upload_to_ia(
             identifier=identifier,
             filepath=fp,
@@ -98,11 +98,11 @@ def upload_missing_s3(outputs_dir: Path, access_key: str, secret_key: str, bucke
         existing_items[filename] = md5_sum
 
     for fp in iter_outputs(outputs_dir):
-        if (
-            fp.name in existing_items
-            and file_md5_hexdigest(fp) == existing_items[fp.name]
-        ):
-            continue
+        # if (
+            # fp.name in existing_items
+            # and file_md5_hexdigest(fp) == existing_items[fp.name]
+        # ):
+            # continue
 
         with fp.open("rb") as in_file:
             s3_client.upload_fileobj(
