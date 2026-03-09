@@ -19,7 +19,7 @@ python3 build_all_as_org_map.py
 #  JSON mapping and encriches every base country maxmind database with this
 #  metadata.
 echo "== BUILDING country ASN databases"
-./build_country_asn_databases.sh skip_existing
+./build_country_asn_databases.sh
 
 echo "== UPLOADING outputs"
 python3 upload_outputs.py
