@@ -227,7 +227,7 @@ def main():
     print("[+] downloading GeoIP assets")
     download_ia_assets(cache_dir=cache_dir, download_latest=download_latest)
     print("[+] downloading AS Organizations assets")
-    download_as_organizations(cache_dir=cache_dir, download_latest=download_latest)
+    download_as_organizations(cache_dir=cache_dir, download_latest=False)
 
     days = []
     for path in (cache_dir / "dbip-country-lite").glob("*.mmdb.gz"):
