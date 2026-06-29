@@ -33,7 +33,7 @@ def build_asn_org_map(in_file, day_str):
 
         asn = int(chunks[0])
         changed = chunks[1]
-        if not changed:
+        if not changed or changed == 'latest':
             changed = day_str
         aut_name = chunks[2]
         org_id = chunks[3]
