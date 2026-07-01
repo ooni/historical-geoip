@@ -156,10 +156,10 @@ def download_as_organizations(cache_dir: Path, download_latest: bool):
     since_date = date(2012, 1, 1)
     until_date = datetime.now(timezone.utc).date()
     if download_latest:
-        # Since date = last week (7 days ago)
-        # Use the last weeks worth of publications to straddle the end of the month:
         # It takes about 4 days from the start of the month for the caida data to be published
+        # Include last month if less than seven days have passed
         since_date = until_date - timedelta(days=7)
+        since_date.replace(day=1) # the release day is always 1
 
     for url in iter_as_org_urls(since_date, until_date):
         dst_filename = os.path.basename(url)
