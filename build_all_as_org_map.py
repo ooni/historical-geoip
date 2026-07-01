@@ -15,6 +15,8 @@ def build_asn_org_map(in_file, day_str):
     org_id_to_name = {}
 
     is_in_asn_section = False
+
+    num_invalid_changed_field = 0
     for line in in_file:
         line = line.strip()
 
@@ -36,6 +38,8 @@ def build_asn_org_map(in_file, day_str):
         asn = int(chunks[0])
         changed = chunks[1]
         if not changed or changed == 'latest':
+            num_invalid_changed_field += 1
+            print(f"record for AS{asn} contains changed == \"latest\"")
             # upstream data is missing the correct date, query it from whois
             # as of 01-07-2026 there are ~150 AS with "latest" as changed
             try:
@@ -46,7 +50,9 @@ def build_asn_org_map(in_file, day_str):
             except Exception as e:
                 # if this lookup fails, use todays date as a fallback so that
                 # it increments with each release
+                print(f"failed to query AS{asn}, defaulting to now")
                 changed = datetime.now(timezone.utc).strftime("%Y%m%d"))
+            print(f"updated record for AS{asn} changed as {changed}")
         aut_name = chunks[2]
         org_id = chunks[3]
         source = chunks[-1]
@@ -59,6 +65,8 @@ def build_asn_org_map(in_file, day_str):
                 org_id=org_id,
             )
         )
+
+    print(f"detected {num_invalid_changed_field} entries with \"latest\" for changed date")
 
     asn_org_map = {}
     for as_info in as_list:
