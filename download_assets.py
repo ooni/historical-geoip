@@ -132,7 +132,9 @@ def links_in_folder(url: str):
     assert url.endswith("/")
     resp = req_session.get(url)
     tree = html.fromstring(resp.text)
-    return [f"{url}{href}" for href in tree.xpath("//a[@href]/text()")[5:]]
+    links = [f"{url}{href}" for href in tree.xpath("//a[@href]/text()")[5:]]
+    print(f"links_in_folder: {url} contains:\n {[link for link in links]}")
+    return links
 
 
 def iter_as_org_urls(since, until) -> Generator[str, None, None]:
