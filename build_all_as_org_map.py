@@ -51,7 +51,7 @@ def build_asn_org_map(in_file, day_str):
                 # if this lookup fails, use todays date as a fallback so that
                 # it increments with each release
                 print(f"failed to query AS{asn}, defaulting to now")
-                changed = datetime.now(timezone.utc).strftime("%Y%m%d"))
+                changed = datetime.now(timezone.utc).strftime("%Y%m%d")
             print(f"updated record for AS{asn} changed as {changed}")
         aut_name = chunks[2]
         org_id = chunks[3]
