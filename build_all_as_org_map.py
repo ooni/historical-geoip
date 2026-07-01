@@ -1,7 +1,9 @@
 import gzip
+import datetime, timezone
 from collections import namedtuple
 import json
 from pathlib import Path
+import whoisit
 
 
 ASInfo = namedtuple("ASInfo", ["asn", "changed", "aut_name", "source", "org_id"])
@@ -34,7 +36,17 @@ def build_asn_org_map(in_file, day_str):
         asn = int(chunks[0])
         changed = chunks[1]
         if not changed or changed == 'latest':
-            changed = day_str
+            # upstream data is missing the correct date, query it from whois
+            # as of 01-07-2026 there are ~150 AS with "latest" as changed
+            try:
+                r = whoisit.asn(f"AS{asn}")
+                dt = r["last_changed_date"]
+                if isinstance(dt, datetime):
+                    changed = dt.strftime("%Y%m%d")
+            except Exception as e:
+                # if this lookup fails, use todays date as a fallback so that
+                # it increments with each release
+                changed = datetime.now(timezone.utc).strftime("%Y%m%d"))
         aut_name = chunks[2]
         org_id = chunks[3]
         source = chunks[-1]
@@ -74,6 +86,7 @@ def build_asn_org_map(in_file, day_str):
 
 
 def main():
+    whoisit.bootstrap()
     input_dir = Path("cache_dir") / "as-organizations"
     output_dir = Path("outputs")
     output_dir.mkdir(parents=True, exist_ok=True)
