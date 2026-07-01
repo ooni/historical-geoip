@@ -180,11 +180,15 @@ def download_routeviews_prefix2as(output_dir: Path, day: date, folders: list):
     ts = day.strftime("%Y/%m")
     for folder in folders:
         dir_url = f"https://publicdata.caida.org/datasets/routing/{folder}/{ts}/"
-        prfx2as_url = list(
-            filter(
-                lambda url: day.strftime("-%Y%m%d-") in url, links_in_folder(dir_url)
-            )
-        )[0]
+        try:
+            prfx2as_url = list(
+                filter(
+                    lambda url: day.strftime("-%Y%m%d-") in url, links_in_folder(dir_url)
+                )
+            )[0]
+        # if no links are found for this folder, skip it and continue
+        except IndexError:
+            continue
         # We strip from the end of the filepath the hourly timestamp so we can access the files more easily
         dst_filename = Path(
             "-".join(os.path.basename(prfx2as_url).split("-")[:3])
