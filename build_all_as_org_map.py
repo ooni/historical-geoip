@@ -1,5 +1,6 @@
 import gzip
-import datetime, timezone
+import datetime
+from datetime import timezone, datetime
 from collections import namedtuple
 import json
 from pathlib import Path
