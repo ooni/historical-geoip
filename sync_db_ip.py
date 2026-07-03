@@ -4,7 +4,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from download_assets import list_all_ia_items
 
-import boto3
+import boto3, botocore
 import requests
 import internetarchive as ia
 
@@ -122,13 +122,16 @@ def main():
             access_key=access_key,
             secret_key=secret_key,
         )
-        upload_to_s3(
-            prefix="dbip-country-lite",
-            filepath=filepath,
-            bucket_name=s3_bucket_name,
-            access_key=s3_access_key,
-            secret_key=s3_secret_key,
-        )
+        try:
+            upload_to_s3(
+                prefix="dbip-country-lite",
+                filepath=filepath,
+                bucket_name=s3_bucket_name,
+                access_key=s3_access_key,
+                secret_key=s3_secret_key,
+            )
+        except botocore.exceptions.NoCredentialsError:
+            pass
 
 
 if __name__ == "__main__":
