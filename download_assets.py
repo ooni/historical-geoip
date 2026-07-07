@@ -144,7 +144,7 @@ def iter_as_org_urls(since, until) -> Generator[str, None, None]:
         except ValueError:
             # handle inconsistent timestamps, like "latest"
             print(f"skipping {url}")
-            pass
+            continue
         if ts <= until and ts >= since:
             yield url
 
