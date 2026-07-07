@@ -4,7 +4,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from download_assets import list_all_ia_items
 
-import boto3
+import boto3, botocore
 import requests
 import internetarchive as ia
 
@@ -28,15 +28,29 @@ def download_dbip(cache_dir: Path, ts: str) -> Path:
     output_dir = cache_dir / "dbip-country-lite"
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / filename
+    tmp_path = output_path.with_suffix(output_path.suffix + ".tmp")
     print(f"   downloading latest db IP file to {output_path}")
     with requests.get(
         f"https://download.db-ip.com/free/{filename}", stream=True
     ) as resp:
         resp.raise_for_status()
-        with output_path.with_suffix(".tmp").open("wb") as out_file:
+
+        # Skip if file already exists and we can verify matching size.
+        remote_len = resp.headers.get("Content-Length")
+        if output_path.exists() and remote_len is not None:
+            try:
+                remote_len_int = int(remote_len)
+                if output_path.stat().st_size == remote_len_int:
+                    print(f"skipping existing file {output_path}")
+                    return output_path
+            except (ValueError, OSError):
+                pass
+
+        with tmp_path.open("wb") as out_file:
             for b in resp.iter_content(chunk_size=2**16):
                 out_file.write(b)
-    output_path.with_suffix(".tmp").rename(output_path)
+
+    tmp_path.rename(output_path)
     return output_path
 
 
@@ -108,13 +122,16 @@ def main():
             access_key=access_key,
             secret_key=secret_key,
         )
-        upload_to_s3(
-            prefix="dbip-country-lite",
-            filepath=filepath,
-            bucket_name=s3_bucket_name,
-            access_key=s3_access_key,
-            secret_key=s3_secret_key,
-        )
+        try:
+            upload_to_s3(
+                prefix="dbip-country-lite",
+                filepath=filepath,
+                bucket_name=s3_bucket_name,
+                access_key=s3_access_key,
+                secret_key=s3_secret_key,
+            )
+        except botocore.exceptions.NoCredentialsError:
+            pass
 
 
 if __name__ == "__main__":
