@@ -4,7 +4,7 @@ import shutil
 import hashlib
 from collections import namedtuple
 from pathlib import Path
-from datetime import datetime, date, timezone
+from datetime import datetime, date, timezone, timedelta
 from typing import Generator, List
 import xml.etree.ElementTree as ET
 
@@ -132,7 +132,9 @@ def links_in_folder(url: str):
     assert url.endswith("/")
     resp = req_session.get(url)
     tree = html.fromstring(resp.text)
-    return [f"{url}{href}" for href in tree.xpath("//a[@href]/text()")[5:]]
+    links = [f"{url}{href}" for href in tree.xpath("//a[@href]/text()")[5:]]
+    print(f"links_in_folder: {url} contains:\n {[link for link in links]}")
+    return links
 
 
 def iter_as_org_urls(since, until) -> Generator[str, None, None]:
@@ -156,8 +158,10 @@ def download_as_organizations(cache_dir: Path, download_latest: bool):
     since_date = date(2012, 1, 1)
     until_date = datetime.now(timezone.utc).date()
     if download_latest:
-        # Start from the 1st of the current month
-        since_date = until_date.replace(day=1)
+        # It takes about 4 days from the start of the month for the caida data to be published
+        # Include last month if less than seven days have passed
+        since_date = until_date - timedelta(days=7)
+        since_date.replace(day=1) # the release day is always 1
 
     for url in iter_as_org_urls(since_date, until_date):
         dst_filename = os.path.basename(url)
@@ -177,11 +181,15 @@ def download_routeviews_prefix2as(output_dir: Path, day: date, folders: list):
     ts = day.strftime("%Y/%m")
     for folder in folders:
         dir_url = f"https://publicdata.caida.org/datasets/routing/{folder}/{ts}/"
-        prfx2as_url = list(
-            filter(
-                lambda url: day.strftime("-%Y%m%d-") in url, links_in_folder(dir_url)
-            )
-        )[0]
+        try:
+            prfx2as_url = list(
+                filter(
+                    lambda url: day.strftime("%Y%m%d.") in url, links_in_folder(dir_url)
+                )
+            )[0]
+        # if no links are found for this folder, skip it and continue
+        except IndexError:
+            continue
         # We strip from the end of the filepath the hourly timestamp so we can access the files more easily
         dst_filename = Path(
             "-".join(os.path.basename(prfx2as_url).split("-")[:3])
